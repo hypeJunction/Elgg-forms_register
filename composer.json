@@ -1,0 +1,24 @@
+{
+	"name": "hypejunction/elgg_forms_register",
+	"type": "elgg-plugin",
+	"description": "Enhanced registration form for Elgg",
+	"homepage": "http://hypejunction.com",
+	"keywords": [
+		"elgg", "plugin", "forms", "validation", "registration"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Ismayil Khayredinov",
+			"email": "info@hypejunction.com"
+		}
+	],
+	"require": {
+		"bower-asset/zxcvbn": "~4.1",
+		"bjeavons/zxcvbn-php": "*"
+	},
+	"require-dev": {
+		"composer/installers": "1.*"
+	}
+}
+
