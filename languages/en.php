@@ -34,8 +34,8 @@ return [
 	'settings:forms:register:footer' => 'Footer text',
 	'settings:forms:register:footer:help' => 'Text to add below the registration form (flush the caches for changes to take effect)',
 
-	'forms:register:header' => elgg_get_plugin_setting('header', 'elgg_forms_register', ''),
-	'forms:register:footer' => elgg_get_plugin_setting('footer', 'elgg_forms_register', ''),
+	'forms:register:header' => elgg_get_plugin_setting('header', 'forms_register', ''),
+	'forms:register:footer' => elgg_get_plugin_setting('footer', 'forms_register', ''),
 
 	'forms:register:first_name' => 'First Name',
 	'forms:register:last_name' => 'Last Name',

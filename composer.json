@@ -1,5 +1,5 @@
 {
-	"name": "hypejunction/elgg_forms_register",
+	"name": "hypejunction/forms_register",
 	"type": "elgg-plugin",
 	"description": "Enhanced registration form for Elgg",
 	"homepage": "http://hypejunction.com",

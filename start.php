@@ -8,15 +8,15 @@
  */
 require_once __DIR__ . '/autoloader.php';
 
-elgg_register_event_handler('init', 'system', 'elgg_forms_register_init');
+elgg_register_event_handler('init', 'system', 'forms_register_init');
 
 /**
  * Initialize the plugin
  * @return void
  */
-function elgg_forms_register_init() {
+function forms_register_init() {
 
-	if (elgg_is_active_plugin('elgg_forms_validation')) {
+	if (elgg_is_active_plugin('forms_validation')) {
 		elgg_extend_view('input/text', 'elements/forms/validation/username');
 		elgg_extend_view('input/password', 'elements/forms/validation/password');
 		elgg_extend_view('forms/register', 'elements/forms/validation/register');
@@ -27,8 +27,8 @@ function elgg_forms_register_init() {
 	elgg_register_action('validation/validusername', __DIR__ . '/actions/validation/validusername.php', 'public');
 	elgg_register_action('validation/availableusername', __DIR__ . '/actions/validation/availableusername.php', 'public');
 
-	elgg_register_plugin_hook_handler('action', 'register', 'elgg_forms_register_prepare_action_values', 1);
-	elgg_register_plugin_hook_handler('register', 'user', 'elgg_forms_register_user_hook', 1);
+	elgg_register_plugin_hook_handler('action', 'register', 'forms_register_prepare_action_values', 1);
+	elgg_register_plugin_hook_handler('register', 'user', 'forms_register_user_hook', 1);
 }
 
 /**
@@ -37,7 +37,7 @@ function elgg_forms_register_init() {
  * @param string $username Username prefix
  * @return string
  */
-function elgg_forms_register_generate_username($username = '') {
+function forms_register_generate_username($username = '') {
 
 	$username = iconv('UTF-8', 'ASCII//TRANSLIT', $username);
 	$blacklist = '/[\x{0080}-\x{009f}\x{00a0}\x{2000}-\x{200f}\x{2028}-\x{202f}\x{3000}\x{e000}-\x{f8ff}]/u';
@@ -75,7 +75,7 @@ function elgg_forms_register_generate_username($username = '') {
  * Validates and prepares values for 'register' action
  * @return void
  */
-function elgg_forms_register_prepare_action_values() {
+function forms_register_prepare_action_values() {
 
 	elgg_make_sticky_form('register');
 
@@ -88,27 +88,27 @@ function elgg_forms_register_prepare_action_values() {
 
 	list($email_username) = explode('@', $email);
 
-	if (elgg_get_plugin_setting('first_last_name', 'elgg_forms_register') && !$name) {
+	if (elgg_get_plugin_setting('first_last_name', 'forms_register') && !$name) {
 		if (!$first_name || !$last_name) {
 			register_error(elgg_echo('actions:register:error:first_last_name'));
 			forward(REFERRER);
 		}
 		set_input('name', "$first_name $last_name");
-	} else if (elgg_get_plugin_setting('autogen_name', 'elgg_forms_register') && !$name) {
+	} else if (elgg_get_plugin_setting('autogen_name', 'forms_register') && !$name) {
 		set_input('name', $email_username);
 	}
 
-	if (elgg_get_plugin_setting('autogen_username', 'elgg_forms_register') && !$username) {
-		$username = elgg_forms_register_generate_username($first_name ? : $email_username);
+	if (elgg_get_plugin_setting('autogen_username', 'forms_register') && !$username) {
+		$username = forms_register_generate_username($first_name ? : $email_username);
 		set_input('username', $username);
 	}
 
-	if (elgg_get_plugin_setting('autogen_password', 'elgg_forms_register')) {
+	if (elgg_get_plugin_setting('autogen_password', 'forms_register')) {
 		$password = generate_random_cleartext_password();
 		set_input('password', $password);
 		set_input('password2', $password);
 	} else {
-		if ($min_strength = elgg_get_plugin_setting('min_password_strength', 'elgg_forms_register')) {
+		if ($min_strength = elgg_get_plugin_setting('min_password_strength', 'forms_register')) {
 			// @todo: add other user inputs
 			$zxcvbn = new \ZxcvbnPhp\Zxcvbn();
 			$strength = $zxcvbn->passwordStrength($password);
@@ -117,7 +117,7 @@ function elgg_forms_register_prepare_action_values() {
 				forward(REFERER);
 			}
 		}
-		if (elgg_get_plugin_setting('hide_password_repeat', 'elgg_forms_register')) {
+		if (elgg_get_plugin_setting('hide_password_repeat', 'forms_register')) {
 			set_input('password2', $password);
 		}
 	}
@@ -132,11 +132,11 @@ function elgg_forms_register_prepare_action_values() {
  * @param string $params Hook params
  * @return void
  */
-function elgg_forms_register_user_hook($hook, $type, $return, $params) {
+function forms_register_user_hook($hook, $type, $return, $params) {
 
 	$user = elgg_extract('user', $params);
 
-	if (elgg_get_plugin_setting('first_last_name', 'elgg_forms_register')) {
+	if (elgg_get_plugin_setting('first_last_name', 'forms_register')) {
 		$user->first_name = get_input('first_name');
 		$user->last_name = get_input('last_name');
 	}
