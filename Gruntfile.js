@@ -61,16 +61,15 @@ module.exports = function (grunt) {
 		gitcommit: {
 			release: {
 				options: {
-					message: 'Release <%= pkg.version %>',
+					message: 'chore(build): release <%= pkg.version %>',
 				},
 				files: {
-					src: ["composer.json", "manifest.xml", "package.json"],
+					src: ["composer.json", "manifest.xml", "package.json", "CHANGELOG.md"],
 				}
 			},
 		},
 		gitpush: {
 			release: {
-				
 			},
 		},
 		gh_release: {
@@ -92,15 +91,27 @@ module.exports = function (grunt) {
 					'Content-Type': 'application/zip'
 				}
 			}
+		},
+		conventionalChangelog: {
+			options: {
+				changelogOpts: {
+					// conventional-changelog options go here
+					preset: 'angular'
+				},
+			},
+			release: {
+				src: 'CHANGELOG.md'
+			},
+
 		}
 	});
-
 	// Load all grunt plugins here
 	grunt.loadNpmTasks('grunt-version');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-composer');
+	grunt.loadNpmTasks('grunt-conventional-changelog');
 	grunt.loadNpmTasks('grunt-git');
 	grunt.loadNpmTasks('grunt-gh-release');
 
@@ -114,6 +125,7 @@ module.exports = function (grunt) {
 		grunt.task.run([
 			'version::' + n,
 			'readpkg',
+			'conventionalChangelog:release',
 			'gitcommit:release',
 			'gitpush:release',
 			'clean:release',
