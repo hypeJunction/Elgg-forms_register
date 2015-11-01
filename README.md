@@ -18,16 +18,16 @@ This plugin is a wrap-up of most common registration form modifications that I h
 
 ### Default Registration from with Validation
 
-![Default Registration form with validation](https://raw.github.com/hypeJunction/forms_register/master/screenshots/default_with_validation.png "Default Registration form with validation")
+![Default Registration form with validation](https://raw.github.com/hypeJunction/Elgg-forms_register/master/screenshots/default_with_validation.png "Default Registration form with validation")
 
 ### Customized Registration Form
 
-![Customized Registration form](https://raw.github.com/hypeJunction/forms_register/master/screenshots/customized.png "Customized form")
+![Customized Registration form](https://raw.github.com/hypeJunction/Elgg-forms_register/master/screenshots/customized.png "Customized form")
 
 ### Minimal Registration Form
 
-![Minimal Registration form](https://raw.github.com/hypeJunction/forms_register/master/screenshots/minimal.png "Minimal form")
+![Minimal Registration form](https://raw.github.com/hypeJunction/Elgg-forms_register/master/screenshots/minimal.png "Minimal form")
 
 ### Plugins Settings
 
-![Plugin settings](https://raw.github.com/hypeJunction/forms_register/master/screenshots/settings.png "Plugin settings")
+![Plugin settings](https://raw.github.com/hypeJunction/Elgg-forms_register/master/screenshots/settings.png "Plugin settings")
