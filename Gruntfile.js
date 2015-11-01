@@ -81,7 +81,7 @@ module.exports = function (grunt) {
 			},
 			release: {
 				tag_name: '<%= pkg.version %>',
-				target_commitish: 'master',
+				target_commitish: '1.x',
 				name: 'Release <%= pkg.version %>',
 				body: grunt.file.read('release.md'),
 				draft: false,
