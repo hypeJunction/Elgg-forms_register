@@ -68,6 +68,11 @@ module.exports = function (grunt) {
 				}
 			},
 		},
+		gitfetch: {
+			release: {
+				all: true
+			}
+		},
 		gitpush: {
 			release: {
 			},
@@ -126,6 +131,7 @@ module.exports = function (grunt) {
 			'version::' + n,
 			'readpkg',
 			'conventionalChangelog:release',
+			'gitfetch:release',
 			'gitcommit:release',
 			'gitpush:release',
 			'clean:release',
