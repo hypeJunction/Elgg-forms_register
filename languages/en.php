@@ -19,6 +19,12 @@ return [
 	'settings:forms:register:autogen_username' => 'Autogenerate username',
 	'settings:forms:register:autogen_username:help' => 'Remove username field from the registration form, and generate it based on email (or first and last name, if enabled)',
 
+	'settings:forms:register:autogen_username_algo' => 'Username generating algorithm',
+	'settings:forms:register:autogen_username_algo:help' => 'Specify which algorithm is to be used when generating the username. On username collisions, or usernames being too short, all algorithms will suffix the username',
+	'settings:forms:register:autogen_username_algo:first_name_only' => 'First name only',
+	'settings:forms:register:autogen_username_algo:full_name' => 'First and last name with a dot separator',
+	'settings:forms:register:autogen_username_algo:email' => 'Username extracted from email address',
+
 	'settings:forms:register:autogen_password' => 'Autogenerate password',
 	'settings:forms:register:autogen_password:help' => 'Remove password fields, and generate a high entropy random password',
 

@@ -39,6 +39,8 @@ function forms_register_init() {
  */
 function forms_register_generate_username($username = '') {
 
+	$available = false;
+
 	$username = iconv('UTF-8', 'ASCII//TRANSLIT', $username);
 	$blacklist = '/[\x{0080}-\x{009f}\x{00a0}\x{2000}-\x{200f}\x{2028}-\x{202f}\x{3000}\x{e000}-\x{f8ff}]/u';
 	$blacklist2 = array(' ', '\'', '/', '\\', '"', '*', '&', '?', '#', '%', '^', '(', ')', '{', '}', '[', ']', '~', '?', '<', '>', ';', '|', '¬', '`', '@', '-', '+', '=');
@@ -50,25 +52,49 @@ function forms_register_generate_username($username = '') {
 	access_show_hidden_entities(true);
 
 	$minlength = elgg_get_config('minusername') ? : 4;
-	$available = strlen($username) >= $minlength && !get_user_by_username($username);
-	try {
-		validate_username($username);
-	} catch (Exception $e) {
-		$username = 'u';
-		$available = false;
+
+	if ($username) {
+		$fill = $minlength - strlen($username);
+	} else {
+		$fill = 8;
 	}
 
+	$algo = elgg_get_plugin_setting('autogen_username_algo', 'forms_register', 'first_name_only');
+	if ($algo == 'full_name' && $fill <= 0) {
+		$separator = '.';
+	} else {
+		$separator = '';
+	}
+
+	if ($fill > 0) {
+		$suffix = (new ElggCrypto())->getRandomString($fill);
+		$username = "$username$separator$suffix";
+	}
+
+	$iterator = 0;
 	while (!$available) {
-		$randlength = strlen($username) < $minlength ? 6 : 4;
-		$suffix = (new ElggCrypto())->getRandomString($randlength, '0123456789');
-		$username = "$username$suffix";
-		$available = get_user_by_username($username);
+		if ($iterator > 0) {
+			$username = "$username$separator$iterator";
+		}
+		$user = get_user_by_username($username);
+		$available = !$user;
+		try {
+			if ($available) {
+				validate_username($username);
+			}
+		} catch (Exception $e) {
+			if ($iterator >= 100) {
+				// too many failed attempts
+				$username = (new ElggCrypto())->getRandomString(8);
+			}
+		}
+		$iterator++;
 	}
 
 	access_show_hidden_entities($ha);
 	elgg_set_ignore_access($ia);
 
-	return $username;
+	return strtolower($username);
 }
 
 /**
@@ -99,7 +125,20 @@ function forms_register_prepare_action_values() {
 	}
 
 	if (elgg_get_plugin_setting('autogen_username', 'forms_register') && !$username) {
-		$username = forms_register_generate_username($first_name ? : $email_username);
+		$algo = elgg_get_plugin_setting('autogen_username_algo', 'forms_register', 'first_name_only');
+		switch ($algo) {
+			case 'first_name_only' :
+				$username = $first_name ? : $email_username;
+				break;
+			case 'full_name' :
+				$username = $first_name && $last_name ? "$first_name.$last_name" : $email_username;
+				break;
+			case 'email' :
+				$username = $email_username;
+				break;
+		}
+
+		$username = forms_register_generate_username($username);
 		set_input('username', $username);
 	}
 

@@ -49,6 +49,18 @@ echo elgg_view_input('select', array(
 ));
 
 echo elgg_view_input('select', array(
+	'name' => 'params[autogen_username_algo]',
+	'value' => $entity->autogen_username_algo,
+	'options_values' => array(
+		'first_name_only' => elgg_echo('settings:forms:register:autogen_username_algo:first_name_only'),
+		'full_name' => elgg_echo('settings:forms:register:autogen_username_algo:full_name'),
+		'email' => elgg_echo('settings:forms:register:autogen_username_algo:email'),
+	),
+	'label' => elgg_echo('settings:forms:register:autogen_username_algo'),
+	'help' => elgg_echo('settings:forms:register:autogen_username_algo:help'),
+));
+
+echo elgg_view_input('select', array(
 	'name' => 'params[autogen_password]',
 	'value' => $entity->autogen_password,
 	'options_values' => array(
