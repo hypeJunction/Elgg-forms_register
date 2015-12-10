@@ -99,7 +99,6 @@ module.exports = function (grunt) {
 			},
 			release: {
 				tag_name: '<%= pkg.version %>',
-				target_commitish: '1.x',
 				name: 'Release <%= pkg.version %>',
 				body: grunt.file.read('release.md'),
 				draft: false,
@@ -116,11 +115,11 @@ module.exports = function (grunt) {
 				changelogOpts: {
 					// conventional-changelog options go here
 					preset: 'angular'
-				},
+				}
 			},
 			release: {
 				src: 'CHANGELOG.md'
-			},
+			}
 
 		}
 	});
