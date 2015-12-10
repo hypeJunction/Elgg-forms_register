@@ -19,6 +19,9 @@
 		"bower-asset/zxcvbn": "~4.1",
 		"bjeavons/zxcvbn-php": "*",
 		"hypejunction/forms_api": "~1.0"
+	},
+	"suggest": {
+		"hypejunciton/forms_validation": "*"
 	}
 }
 
