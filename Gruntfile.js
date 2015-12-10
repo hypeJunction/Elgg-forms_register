@@ -74,9 +74,22 @@ module.exports = function (grunt) {
 				all: true
 			}
 		},
+		gittag: {
+			release: {
+				options: {
+					tag: '<%= pkg.version %>',
+					message: 'Release <%= pkg.version %>'
+				}
+			}
+		},
 		gitpush: {
 			release: {
 			},
+			release_tags: {
+				options: {
+					tags: true
+				}
+			}
 		},
 		gh_release: {
 			options: {
@@ -134,13 +147,14 @@ module.exports = function (grunt) {
 			'conventionalChangelog:release',
 			'gitfetch:release',
 			'gitcommit:release',
+			'gittag:release',
 			'gitpush:release',
+			'gitpush:release_tags',
 			'clean:release',
 			'composer:install:no-dev:prefer-dist',
 			'copy:release',
 			'compress:release',
 			'gh_release',
-			'clean:release',
 		]);
 	});
 };
