@@ -1,3 +1,13 @@
+<a name="1.3.2"></a>
+## [1.3.2](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.1...v1.3.2) (2015-12-10)
+
+
+### Bug Fixes
+
+* **composer:** dependency plugins now installed in mod and cleaned during release ([c063baf](https://github.com/hypeJunction/Elgg-forms_register/commit/c063baf))
+
+
+
 <a name="1.3.1"></a>
 ## [1.3.1](https://github.com/hypeJunction/Elgg-forms_register/compare/1.2.1...v1.3.1) (2015-12-10)
 
