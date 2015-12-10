@@ -15,10 +15,8 @@
 	],
 	"require": {
 		"bower-asset/zxcvbn": "~4.1",
-		"bjeavons/zxcvbn-php": "*"
-	},
-	"require-dev": {
-		"composer/installers": "1.*"
+		"bjeavons/zxcvbn-php": "*",
+		"hypejunction/forms_api": "*"
 	}
 }
 

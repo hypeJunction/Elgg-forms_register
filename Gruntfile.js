@@ -20,7 +20,7 @@ module.exports = function (grunt) {
 		},
 		clean: {
 			release: {
-				src: ['build/', 'releases/', 'vendor/', 'composer.lock']
+				src: ['build/', 'releases/', 'mod/', 'vendor/', 'composer.lock']
 			}
 		},
 		copy: {
@@ -30,6 +30,7 @@ module.exports = function (grunt) {
 					'!**/.git*',
 					'!releases/**',
 					'!build/**',
+					'!mod/**',
 					'!node_modules/**',
 					'!package.json',
 					'!config.rb',
