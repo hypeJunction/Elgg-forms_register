@@ -136,6 +136,10 @@ function forms_register_prepare_action_values() {
 			case 'email' :
 				$username = $email_username;
 				break;
+
+			case 'alnum' :
+				$username = '';
+				break;
 		}
 
 		$username = forms_register_generate_username($username);

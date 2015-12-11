@@ -55,6 +55,7 @@ echo elgg_view_input('select', array(
 		'first_name_only' => elgg_echo('settings:forms:register:autogen_username_algo:first_name_only'),
 		'full_name' => elgg_echo('settings:forms:register:autogen_username_algo:full_name'),
 		'email' => elgg_echo('settings:forms:register:autogen_username_algo:email'),
+		'alnum' => elgg_echo('settings:forms:register:autogen_username_algo:alnum'),
 	),
 	'label' => elgg_echo('settings:forms:register:autogen_username_algo'),
 	'help' => elgg_echo('settings:forms:register:autogen_username_algo:help'),

@@ -24,6 +24,7 @@ return [
 	'settings:forms:register:autogen_username_algo:first_name_only' => 'First name only',
 	'settings:forms:register:autogen_username_algo:full_name' => 'First and last name with a dot separator',
 	'settings:forms:register:autogen_username_algo:email' => 'Username extracted from email address',
+	'settings:forms:register:autogen_username_algo:alnum' => 'Random alpha numeric characters',
 
 	'settings:forms:register:autogen_password' => 'Autogenerate password',
 	'settings:forms:register:autogen_password:help' => 'Remove password fields, and generate a high entropy random password',
