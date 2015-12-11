@@ -1,3 +1,13 @@
+<a name="1.3.4"></a>
+## [1.3.4](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.3...v1.3.4) (2015-12-11)
+
+
+### Features
+
+* **usernames:** add random alphanum to username generating algorithms ([8a5e801](https://github.com/hypeJunction/Elgg-forms_register/commit/8a5e801))
+
+
+
 <a name="1.3.3"></a>
 ## [1.3.3](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.2...v1.3.3) (2015-12-10)
 
