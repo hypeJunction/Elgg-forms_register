@@ -1,3 +1,13 @@
+<a name="1.3.5"></a>
+## [1.3.5](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.4...v1.3.5) (2016-01-12)
+
+
+### Bug Fixes
+
+* **views:** fix root variable name ([137b2e6](https://github.com/hypeJunction/Elgg-forms_register/commit/137b2e6))
+
+
+
 <a name="1.3.4"></a>
 ## [1.3.4](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.3...v1.3.4) (2015-12-11)
 
