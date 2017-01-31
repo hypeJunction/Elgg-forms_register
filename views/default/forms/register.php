@@ -77,14 +77,16 @@ if (elgg_get_plugin_setting('autogen_password', 'forms_register', false)) {
 		'minlength' => elgg_get_config('min_password_length') ? : 6, 'data-parsley-minstrength' => elgg_get_plugin_setting('min_password_strength', 'forms_register', 0),
 	]);
 
-	echo elgg_view_input('password', [
-		'name' => 'password2',
-		'required' => true,
-		'label' => elgg_echo('passwordagain'),
-		'data-parsley-equalto' => '#password',
-	]);
-}
+	if (!elgg_get_plugin_setting('hide_password_repeat', 'forms_register')) {
 
+		echo elgg_view_input('password', [
+			'name' => 'password2',
+			'required' => true,
+			'label' => elgg_echo('passwordagain'),
+			'data-parsley-equalto' => '#password',
+		]);
+	}
+}
 
 // view to extend to add more fields to the registration form
 echo elgg_view('register/extend', $vars);
