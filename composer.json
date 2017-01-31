@@ -20,7 +20,7 @@
 		"bjeavons/zxcvbn-php": "*"
 	},
 	"suggest": {
-		"hypejunciton/forms_validation": "*"
+		"hypejunction/forms_validation": "*"
 	}
 }
 
