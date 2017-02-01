@@ -1,3 +1,22 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.5...v2.0.0) (2017-02-01)
+
+
+### Bug Fixes
+
+* **forms:** respect repeat password setting when rendering the form ([5808125](https://github.com/hypeJunction/Elgg-forms_register/commit/5808125))
+
+### Features
+
+* **forms:** render forms elements using new core API ([d9629c8](https://github.com/hypeJunction/Elgg-forms_register/commit/d9629c8))
+
+
+### BREAKING CHANGES
+
+* forms: Now requires Elgg 2.3
+
+
+
 <a name="1.3.5"></a>
 ## [1.3.5](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.4...v1.3.5) (2016-01-12)
 
