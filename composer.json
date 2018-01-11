@@ -16,7 +16,7 @@
 	"require": {
 		"php": ">=5.5",
 		"composer/installers": "~1.0",
-		"bower-asset/zxcvbn": "~4.1",
+		"dropbox/zxcvbn": "~4.1",
 		"bjeavons/zxcvbn-php": "*"
 	},
 	"suggest": {
