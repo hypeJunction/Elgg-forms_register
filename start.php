@@ -48,8 +48,8 @@ function forms_register_generate_username($username = '') {
 	$username = str_replace($blacklist2, '.', $username);
 
 	$ia = elgg_set_ignore_access(true);
-	$ha = access_get_show_hidden_status();
-	access_show_hidden_entities(true);
+	$ha = elgg_get_show_hidden_status();
+	elgg_set_show_hidden_status(true);
 
 	$minlength = elgg_get_config('minusername') ? : 4;
 
@@ -67,7 +67,7 @@ function forms_register_generate_username($username = '') {
 	}
 
 	if ($fill > 0) {
-		$suffix = (new ElggCrypto())->getRandomString($fill);
+		$suffix = elgg()->crypto->getRandomString($fill);
 		$username = "$username$separator$suffix";
 	}
 
@@ -85,13 +85,13 @@ function forms_register_generate_username($username = '') {
 		} catch (Exception $e) {
 			if ($iterator >= 100) {
 				// too many failed attempts
-				$username = (new ElggCrypto())->getRandomString(8);
+				$username = elgg()->crypto->getRandomString(8);
 			}
 		}
 		$iterator++;
 	}
 
-	access_show_hidden_entities($ha);
+	elgg_set_show_hidden_status($ha);
 	elgg_set_ignore_access($ia);
 
 	return strtolower($username);
@@ -116,7 +116,7 @@ function forms_register_prepare_action_values() {
 
 	if (elgg_get_plugin_setting('first_last_name', 'forms_register') && !$name) {
 		if (!$first_name || !$last_name) {
-			register_error(elgg_echo('actions:register:error:first_last_name'));
+			elgg_register_error_message(elgg_echo('actions:register:error:first_last_name'));
 			forward(REFERRER);
 		}
 		set_input('name', "$first_name $last_name");
@@ -156,7 +156,7 @@ function forms_register_prepare_action_values() {
 			$zxcvbn = new \ZxcvbnPhp\Zxcvbn();
 			$strength = $zxcvbn->passwordStrength($password);
 			if ($strength < $min_strength) {
-				register_error(elgg_echo('actions:register:error:password_strength'));
+				elgg_register_error_message(elgg_echo('actions:register:error:password_strength'));
 				forward(REFERER);
 			}
 		}

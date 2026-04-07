@@ -4,8 +4,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 elgg_ajax_gatekeeper();
 
-$access_status = access_get_show_hidden_status();
-access_show_hidden_entities(true);
+$access_status = elgg_get_show_hidden_status();
+elgg_set_show_hidden_status(true);
 
 $username = trim(get_input('username', ''));
 
