@@ -1,25 +1,19 @@
 <?php
 
-use Symfony\Component\HttpFoundation\Response;
-
-elgg_ajax_gatekeeper();
-
 $username = trim(get_input('username', ''));
 
+$valid = true;
 try {
-	$valid = validate_username($username);
-} catch (Exception $e) {
+	elgg()->accounts->assertValidUsername($username);
+} catch (\Elgg\Exceptions\Configuration\RegistrationException $e) {
 	$valid = false;
 }
 
-$status = $valid ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY;
+if (!$valid) {
+	return elgg_error_response('', '', 422);
+}
 
-$data = json_encode(array(
+return elgg_ok_response([
 	'username' => $username,
 	'valid' => $valid,
-));
-
-$response = new Response($data, $status, ['content-type' => 'application/json']);
-$response->prepare(_elgg_services()->request)->send();
-
-exit;
+]);

@@ -1,27 +1,20 @@
 <?php
 
-use Symfony\Component\HttpFoundation\Response;
-
-elgg_ajax_gatekeeper();
-
-$access_status = elgg_get_show_hidden_status();
-elgg_set_show_hidden_status(true);
-
 $username = trim(get_input('username', ''));
 
 $available = true;
-if (get_user_by_username($username)) {
-	$available = false;
+
+elgg_call(ELGG_SHOW_DISABLED_ENTITIES, function () use ($username, &$available) {
+	if (get_user_by_username($username)) {
+		$available = false;
+	}
+});
+
+if (!$available) {
+	return elgg_error_response('', '', 422);
 }
 
-$status = $available ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY;
-
-$data = json_encode(array(
+return elgg_ok_response([
 	'username' => $username,
 	'available' => $available,
-));
-
-$response = new Response($data, $status, ['content-type' => 'application/json']);
-$response->prepare(_elgg_services()->request)->send();
-
-exit;
+]);
