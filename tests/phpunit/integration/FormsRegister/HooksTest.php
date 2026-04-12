@@ -31,13 +31,13 @@ class HooksTest extends IntegrationTestCase {
         }
         // Default: clear every setting
         foreach ($this->settingKeys as $k) {
-            elgg_set_plugin_setting($k, '', 'forms_register');
+            elgg_get_plugin_from_id('forms_register')->setSetting($k, '');
         }
     }
 
     public function down() {
         foreach ($this->origSettings as $k => $v) {
-            elgg_set_plugin_setting($k, (string) $v, 'forms_register');
+            elgg_get_plugin_from_id('forms_register')->setSetting($k, (string) $v);
         }
         // Clean inputs
         foreach (['first_name', 'last_name', 'email', 'name', 'username', 'password', 'password2'] as $k) {
@@ -90,7 +90,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesAutoGeneratesNameFromEmail(): void {
-        elgg_set_plugin_setting('autogen_name', '1', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_name', '1');
 
         set_input('email', 'jdoe@example.com');
         set_input('name', '');
@@ -105,7 +105,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesBuildsNameFromFirstLast(): void {
-        elgg_set_plugin_setting('first_last_name', '1', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
         set_input('first_name', 'Jane');
         set_input('last_name', 'Doe');
@@ -122,7 +122,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesRejectsMissingFirstLast(): void {
-        elgg_set_plugin_setting('first_last_name', '1', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
         set_input('first_name', '');
         set_input('last_name', '');
@@ -136,8 +136,8 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesAutogensUsernameFirstNameOnly(): void {
-        elgg_set_plugin_setting('autogen_username', '1', 'forms_register');
-        elgg_set_plugin_setting('autogen_username_algo', 'first_name_only', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username', '1');
+        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username_algo', 'first_name_only');
 
         set_input('first_name', 'Alice');
         set_input('email', 'alice@example.com');
@@ -154,7 +154,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesAutogensPassword(): void {
-        elgg_set_plugin_setting('autogen_password', '1', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_password', '1');
 
         set_input('email', 'bob@example.com');
         set_input('name', 'Bob');
@@ -171,7 +171,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesHidePasswordRepeatCopiesPassword(): void {
-        elgg_set_plugin_setting('hide_password_repeat', '1', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('hide_password_repeat', '1');
 
         set_input('email', 'c@example.com');
         set_input('name', 'Carol');
@@ -186,7 +186,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testRegisterUserWritesFirstLastName(): void {
-        elgg_set_plugin_setting('first_last_name', '1', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
         $user = $this->createUser();
         set_input('first_name', 'Dan');
@@ -206,7 +206,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testRegisterUserSkipsWhenSettingOff(): void {
-        elgg_set_plugin_setting('first_last_name', '', 'forms_register');
+        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '');
 
         $user = $this->createUser();
         set_input('first_name', 'Eve');
