@@ -21,8 +21,13 @@ class ValidationActionsTest extends IntegrationTestCase {
     }
 
     public function testAssertValidUsernameAcceptsValid(): void {
-        $this->expectNotToPerformAssertions();
-        elgg()->accounts->assertValidUsername('valid_name_' . substr(md5((string) mt_rand()), 0, 6));
+        $threw = false;
+        try {
+            elgg()->accounts->assertValidUsername('valid_name_' . substr(md5((string) mt_rand()), 0, 6));
+        } catch (\Elgg\Exceptions\Configuration\RegistrationException $e) {
+            $threw = true;
+        }
+        $this->assertFalse($threw, 'assertValidUsername should not throw for a valid username');
     }
 
     public function testAssertValidUsernameRejectsTooShort(): void {
@@ -32,7 +37,7 @@ class ValidationActionsTest extends IntegrationTestCase {
 
     public function testGetUserByUsernameReturnsNullForAvailable(): void {
         $random = 'nonexistent_' . substr(md5((string) mt_rand()), 0, 10);
-        $this->assertNull(get_user_by_username($random));
+        $this->assertFalse(get_user_by_username($random));
     }
 
     public function testGetUserByUsernameFindsExisting(): void {

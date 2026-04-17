@@ -57,7 +57,7 @@ class Hooks {
 		}
 
 		if (\elgg_get_plugin_setting('autogen_password', 'forms_register')) {
-			$password = \generate_random_cleartext_password();
+			$password = \elgg_generate_password();
 			\set_input('password', $password);
 			\set_input('password2', $password);
 		} else {

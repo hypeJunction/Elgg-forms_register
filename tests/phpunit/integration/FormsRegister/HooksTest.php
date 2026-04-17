@@ -3,7 +3,7 @@
 namespace FormsRegister;
 
 use Elgg\IntegrationTestCase;
-use Elgg\Hook;
+use Elgg\HooksRegistrationService\Hook;
 use FormsRegister\Hooks;
 
 /**
@@ -50,13 +50,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     private function buildActionHook(): Hook {
-        $hook = $this->getMockBuilder(Hook::class)->getMock();
-        $hook->method('getName')->willReturn('action');
-        $hook->method('getType')->willReturn('register');
-        $hook->method('getValue')->willReturn(null);
-        $hook->method('getParams')->willReturn([]);
-        $hook->method('getParam')->willReturnCallback(function ($k, $d = null) { return $d; });
-        return $hook;
+        return new Hook(elgg(), 'action', 'register', null, []);
     }
 
     public function testGenerateUsernameReturnsLowercaseNonEmpty(): void {
@@ -193,7 +187,7 @@ class HooksTest extends IntegrationTestCase {
         set_input('last_name', 'Smith');
 
         $hook = new Hook(
-            elgg()->public_container,
+            elgg(),
             'register',
             'user',
             true,
@@ -213,7 +207,7 @@ class HooksTest extends IntegrationTestCase {
         set_input('last_name', 'Nobody');
 
         $hook = new Hook(
-            elgg()->public_container,
+            elgg(),
             'register',
             'user',
             true,
