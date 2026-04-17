@@ -16,12 +16,21 @@ export async function queryDb(sql: string, params: any[] = []): Promise<any[]> {
   return rows as any[];
 }
 
+/**
+ * In Elgg 4.x, user fields (username, email) are stored in elgg_metadata,
+ * not in a separate elgg_users_entity table.
+ */
 export async function getUserByUsername(username: string): Promise<any | null> {
   const rows = await queryDb(
-    `SELECT e.guid, e.type, e.subtype, u.username, u.email
+    `SELECT e.guid, e.type, e.subtype,
+            MAX(CASE WHEN m.name = 'username' THEN m.value END) AS username,
+            MAX(CASE WHEN m.name = 'email' THEN m.value END) AS email
      FROM elgg_entities e
-     JOIN elgg_users_entity u ON e.guid = u.guid
-     WHERE u.username = ?`,
+     JOIN elgg_metadata m ON m.entity_guid = e.guid
+     WHERE e.type = 'user'
+       AND e.guid = (SELECT entity_guid FROM elgg_metadata
+                     WHERE name = 'username' AND value = ? LIMIT 1)
+     GROUP BY e.guid`,
     [username]
   );
   return rows[0] || null;
@@ -38,38 +47,12 @@ export async function getUserMetadata(guid: number, name: string): Promise<strin
 export async function deleteUserByUsername(username: string): Promise<void> {
   const user = await getUserByUsername(username);
   if (!user) return;
-  // Soft cleanup; production cleanup should go through Elgg's user delete
+  // Clean up in dependency order (elgg_users_sessions stores no guid in 4.x)
   await queryDb(`DELETE FROM elgg_metadata WHERE entity_guid = ?`, [user.guid]);
-  await queryDb(`DELETE FROM elgg_users_entity WHERE guid = ?`, [user.guid]);
+  await queryDb(`DELETE FROM elgg_entity_relationships WHERE guid_one = ? OR guid_two = ?`, [user.guid, user.guid]);
+  await queryDb(`DELETE FROM elgg_private_settings WHERE entity_guid = ?`, [user.guid]);
+  await queryDb(`DELETE FROM elgg_annotations WHERE entity_guid = ?`, [user.guid]);
   await queryDb(`DELETE FROM elgg_entities WHERE guid = ?`, [user.guid]);
-}
-
-export async function setPluginSetting(
-  pluginId: string,
-  name: string,
-  value: string
-): Promise<void> {
-  const rows = await queryDb(
-    `SELECT e.guid FROM elgg_entities e
-     JOIN elgg_metadata m ON m.entity_guid = e.guid
-     WHERE e.subtype = 'plugin' AND m.name = 'title' AND m.value = ?`,
-    [pluginId]
-  );
-  if (!rows[0]) return;
-  const guid = rows[0].guid;
-  await queryDb(
-    `INSERT INTO elgg_private_settings (entity_guid, name, value)
-     VALUES (?, ?, ?)
-     ON DUPLICATE KEY UPDATE value = VALUES(value)`,
-    [guid, `plugin:user_setting:${pluginId}:${name}`, value]
-  );
-  // Also set via generic private setting path
-  await queryDb(
-    `INSERT INTO elgg_private_settings (entity_guid, name, value)
-     VALUES (?, ?, ?)
-     ON DUPLICATE KEY UPDATE value = VALUES(value)`,
-    [guid, name, value]
-  );
 }
 
 export async function gotoRegister(page: Page): Promise<void> {

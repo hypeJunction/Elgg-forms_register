@@ -4,22 +4,24 @@ import { getUserByUsername, deleteUserByUsername, gotoRegister } from '../helper
 /**
  * End-to-end tests for the forms_register customized registration form.
  *
- * These tests exercise the /register page in its default configuration
- * (all plugin settings off). Tests for autogen_name / autogen_username /
- * first_last_name modes are marked skipped because they require toggling
- * plugin settings and refreshing the test DB, which should be handled by
- * a dedicated fixture runner.
+ * Uses the `.elgg-form-register` scope to avoid strict-mode violations from
+ * the header login dropdown which also contains password/username inputs.
+ *
+ * API tests for the validation endpoints first navigate to the register page
+ * to obtain a valid CSRF token (Elgg redirects unauthenticated raw POSTs).
  */
 test.describe('forms_register: register page', () => {
   test('register page renders with expected fields', async ({ page }) => {
     await gotoRegister(page);
+    const form = page.locator('.elgg-form-register');
 
-    await expect(page.locator('input[name="email"]')).toBeVisible();
-    await expect(page.locator('input[name="password"]')).toBeVisible();
-    await expect(page.locator('input[name="name"], input[name="first_name"]')).toHaveCount(
-      await page.locator('input[name="name"]').count() +
-        await page.locator('input[name="first_name"]').count()
-    );
+    await expect(form.locator('input[name="email"]')).toBeVisible();
+    await expect(form.locator('input[name="password"]')).toBeVisible();
+    // Display name or first_name
+    const nameCount =
+      (await form.locator('input[name="name"]').count()) +
+      (await form.locator('input[name="first_name"]').count());
+    expect(nameCount).toBeGreaterThan(0);
   });
 
   test('submit creates user in default mode (UI + DB)', async ({ page }) => {
@@ -29,27 +31,24 @@ test.describe('forms_register: register page', () => {
     const password = `Pa55word!${rand}`;
 
     await gotoRegister(page);
+    const form = page.locator('.elgg-form-register');
 
-    // Default mode: display name field is 'name'
-    const hasName = await page.locator('input[name="name"]').count();
-    if (hasName) {
-      await page.fill('input[name="name"]', `Playwright ${rand}`);
+    if (await form.locator('input[name="name"]').count()) {
+      await form.locator('input[name="name"]').fill(`Playwright ${rand}`);
     }
 
-    await page.fill('input[name="email"]', email);
+    await form.locator('input[name="email"]').fill(email);
 
-    const hasUsername = await page.locator('input[name="username"]').count();
-    if (hasUsername) {
-      await page.fill('input[name="username"]', username);
+    if (await form.locator('input[name="username"]').count()) {
+      await form.locator('input[name="username"]').fill(username);
     }
 
-    await page.fill('input[name="password"]', password);
-    const hasRepeat = await page.locator('input[name="password2"]').count();
-    if (hasRepeat) {
-      await page.fill('input[name="password2"]', password);
+    await form.locator('input[name="password"]').fill(password);
+    if (await form.locator('input[name="password2"]').count()) {
+      await form.locator('input[name="password2"]').fill(password);
     }
 
-    await page.click('button[type="submit"], input[type="submit"]');
+    await form.locator('button[type="submit"], input[type="submit"]').click();
 
     // Assert UI: redirected away from /register
     await page.waitForLoadState('networkidle');
@@ -66,58 +65,82 @@ test.describe('forms_register: register page', () => {
 
   test('register page shows errors when required fields missing', async ({ page }) => {
     await gotoRegister(page);
-    await page.click('button[type="submit"], input[type="submit"]');
+    const form = page.locator('.elgg-form-register');
+    await form.locator('button[type="submit"], input[type="submit"]').click();
     // Stay on register page or show error
     await page.waitForLoadState('networkidle');
-    // Either HTML5 validation blocks submit, or Elgg reports errors
     const url = page.url();
     expect(url).toMatch(/\/register/);
   });
 });
 
 test.describe('forms_register: username validation endpoints', () => {
-  test('availableusername endpoint returns ok for unused name', async ({ request }) => {
+  /**
+   * Helper: get CSRF token from the register page.
+   * Elgg requires a valid __elgg_token + __elgg_ts pair for all action POSTs.
+   */
+  async function getCsrfTokens(page: any): Promise<{ token: string; ts: string }> {
+    await page.goto('/register');
+    const token = await page.locator('input[name="__elgg_token"]').first().inputValue();
+    const ts = await page.locator('input[name="__elgg_ts"]').first().inputValue();
+    return { token, ts };
+  }
+
+  test('availableusername endpoint returns ok for unused name', async ({ page }) => {
+    const { token, ts } = await getCsrfTokens(page);
     const rand = Math.random().toString(36).slice(2, 10);
-    const response = await request.post('/action/validation/availableusername', {
-      form: { username: `avail_${rand}` },
+
+    const response = await page.request.post('/action/validation/availableusername', {
+      form: { username: `avail_${rand}`, __elgg_token: token, __elgg_ts: ts },
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
     });
-    // Elgg action responses may 200 with ok_response or 422 when taken
-    expect([200, 302]).toContain(response.status());
+    expect([200]).toContain(response.status());
   });
 
-  test('availableusername endpoint returns error for existing name', async ({ request, page }) => {
-    // Create via default register flow
+  test('availableusername endpoint returns error for existing name', async ({ page }) => {
     const rand = Math.random().toString(36).slice(2, 10);
     const username = `taken_${rand}`;
     const email = `${username}@example.com`;
     const password = `Pa55word!${rand}`;
 
+    // Navigate to register and get tokens BEFORE submitting the form.
     await gotoRegister(page);
-    if (await page.locator('input[name="name"]').count()) {
-      await page.fill('input[name="name"]', `Taken ${rand}`);
+    const form = page.locator('.elgg-form-register');
+    if (await form.locator('input[name="name"]').count()) {
+      await form.locator('input[name="name"]').fill(`Taken ${rand}`);
     }
-    await page.fill('input[name="email"]', email);
-    if (await page.locator('input[name="username"]').count()) {
-      await page.fill('input[name="username"]', username);
+    await form.locator('input[name="email"]').fill(email);
+    if (await form.locator('input[name="username"]').count()) {
+      await form.locator('input[name="username"]').fill(username);
     }
-    await page.fill('input[name="password"]', password);
-    if (await page.locator('input[name="password2"]').count()) {
-      await page.fill('input[name="password2"]', password);
+    await form.locator('input[name="password"]').fill(password);
+    if (await form.locator('input[name="password2"]').count()) {
+      await form.locator('input[name="password2"]').fill(password);
     }
-    await page.click('button[type="submit"], input[type="submit"]');
+    await form.locator('button[type="submit"], input[type="submit"]').click();
     await page.waitForLoadState('networkidle');
 
-    const response = await request.post('/action/validation/availableusername', {
-      form: { username },
+    // After registration, user is logged in — log out so /register is accessible.
+    await page.goto('/action/logout');
+    await page.waitForLoadState('networkidle');
+
+    // Get fresh tokens from the register page and test the endpoint.
+    const { token, ts } = await getCsrfTokens(page);
+    const response = await page.request.post('/action/validation/availableusername', {
+      form: { username, __elgg_token: token, __elgg_ts: ts },
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
     });
     expect([422, 400]).toContain(response.status());
 
     await deleteUserByUsername(username);
   });
 
-  test('validusername endpoint rejects too-short names', async ({ request }) => {
-    const response = await request.post('/action/validation/validusername', {
-      form: { username: 'ab' },
+  test('validusername endpoint rejects too-short names', async ({ page }) => {
+    const { token, ts } = await getCsrfTokens(page);
+
+    const response = await page.request.post('/action/validation/validusername', {
+      form: { username: 'ab', __elgg_token: token, __elgg_ts: ts },
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
     });
     expect([422, 400]).toContain(response.status());
   });

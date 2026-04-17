@@ -4,11 +4,13 @@
 robots.txt
 /nbproject/
 /.sass-cache/
-/node_modules/
+node_modules/
 /build/
 /mod/
 /releases/
 /vendor/
 composer.lock
-Gemfile.locktests/.phpunit.result.cache
+Gemfile.lock
+tests/.phpunit.result.cache
+tests/playwright/test-results/
 docker/.env

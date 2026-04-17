@@ -6,7 +6,7 @@
 	"keywords": [
 		"elgg", "plugin", "forms", "validation", "registration"
 	],
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
 			"name": "Ismayil Khayredinov",
@@ -14,13 +14,23 @@
 		}
 	],
 	"require": {
-		"php": ">=7.1",
-		"composer/installers": "~1.0",
+		"php": ">=7.4",
+		"elgg/elgg": "^4.0",
+		"composer/installers": "^2.0",
 		"bower-asset/zxcvbn": "~4.1",
 		"bjeavons/zxcvbn-php": "*"
 	},
 	"suggest": {
 		"hypejunction/forms_validation": "*"
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://asset-packagist.org"
+		}
+	],
+	"extra": {
+		"installer-name": "forms_register"
 	},
 	"config": {
 		"allow-plugins": {

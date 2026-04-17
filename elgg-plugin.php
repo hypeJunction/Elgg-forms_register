@@ -1,6 +1,11 @@
 <?php
 
 return [
+	'plugin' => [
+		'name' => 'Registration Form',
+		'version' => '4.0.0',
+	],
+
 	'bootstrap' => \FormsRegister\Bootstrap::class,
 
 	'actions' => [
