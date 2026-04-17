@@ -1,3 +1,19 @@
+<a name="4.0.0"></a>
+# 4.0.0 (2026-04-17)
+
+### Migration to Elgg 4.x
+
+* Remove `manifest.xml`; plugin metadata now in `elgg-plugin.php` + `composer.json`
+* Replace deprecated `generate_random_cleartext_password()` with `elgg_generate_password()`
+* Update `composer.json`: php >=7.4, elgg/elgg ^4.0, composer/installers ^2.0
+* Add `asset-packagist.org` repository for `bower-asset/zxcvbn`
+* Add per-plugin Docker test stack with PHPUnit + Playwright test suites
+* All hooks remain on the `hooks` key (4.x style); no event renames needed
+
+### BREAKING CHANGES
+
+* Requires Elgg 4.0 or later
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/hypeJunction/Elgg-forms_register/compare/1.3.5...v2.0.0) (2017-02-01)
 
