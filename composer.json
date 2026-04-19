@@ -4,7 +4,11 @@
 	"description": "Enhanced registration form for Elgg",
 	"homepage": "http://hypejunction.com",
 	"keywords": [
-		"elgg", "plugin", "forms", "validation", "registration"
+		"elgg",
+		"plugin",
+		"forms",
+		"validation",
+		"registration"
 	],
 	"license": "GPL-2.0-or-later",
 	"authors": [
@@ -30,7 +34,10 @@
 		}
 	],
 	"extra": {
-		"installer-name": "forms_register"
+		"installer-name": "forms_register",
+		"elgg-plugin": {
+			"id": "forms_register"
+		}
 	},
 	"config": {
 		"allow-plugins": {
