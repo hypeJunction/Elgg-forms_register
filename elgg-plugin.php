@@ -3,7 +3,7 @@
 return [
 	'plugin' => [
 		'name' => 'Registration Form',
-		'version' => '4.0.0',
+		'version' => '5.0.0',
 	],
 
 	'bootstrap' => \FormsRegister\Bootstrap::class,
@@ -17,15 +17,15 @@ return [
 		],
 	],
 
-	'hooks' => [
+	'events' => [
 		'action' => [
 			'register' => [
-				\FormsRegister\Hooks::class . '::prepareActionValues' => ['priority' => 1],
+				\FormsRegister\Events::class . '::prepareActionValues' => ['priority' => 1],
 			],
 		],
 		'register' => [
 			'user' => [
-				\FormsRegister\Hooks::class . '::registerUser' => ['priority' => 1],
+				\FormsRegister\Events::class . '::registerUser' => ['priority' => 1],
 			],
 		],
 	],

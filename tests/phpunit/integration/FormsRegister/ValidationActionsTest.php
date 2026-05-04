@@ -4,22 +4,21 @@ namespace FormsRegister;
 
 use Elgg\IntegrationTestCase;
 
-/**
- * Smoke tests for the public validation endpoints.
- *
- * These tests invoke the underlying Elgg services the action files call
- * (assertValidUsername and get_user_by_username) rather than dispatching
- * the action directly, because IntegrationTestCase has no executeAction().
- */
 class ValidationActionsTest extends IntegrationTestCase {
 
     public function up() {}
     public function down() {}
 
+    /**
+     * @return string
+     */
     public function getPluginID(): string {
         return 'forms_register';
     }
 
+    /**
+     * @return void
+     */
     public function testAssertValidUsernameAcceptsValid(): void {
         $threw = false;
         try {
@@ -30,23 +29,35 @@ class ValidationActionsTest extends IntegrationTestCase {
         $this->assertFalse($threw, 'assertValidUsername should not throw for a valid username');
     }
 
+    /**
+     * @return void
+     */
     public function testAssertValidUsernameRejectsTooShort(): void {
         $this->expectException(\Elgg\Exceptions\Configuration\RegistrationException::class);
         elgg()->accounts->assertValidUsername('ab');
     }
 
+    /**
+     * @return void
+     */
     public function testGetUserByUsernameReturnsNullForAvailable(): void {
         $random = 'nonexistent_' . substr(md5((string) mt_rand()), 0, 10);
-        $this->assertFalse(get_user_by_username($random));
+        $this->assertNull(elgg_get_user_by_username($random));
     }
 
+    /**
+     * @return void
+     */
     public function testGetUserByUsernameFindsExisting(): void {
         $user = $this->createUser();
-        $found = get_user_by_username($user->username);
+        $found = elgg_get_user_by_username($user->username);
         $this->assertNotNull($found);
         $this->assertSame($user->guid, $found->guid);
     }
 
+    /**
+     * @return void
+     */
     public function testRegisterFormViewRenders(): void {
         $html = elgg_view_form('register', [], [
             'friend_guid' => 0,
@@ -58,6 +69,9 @@ class ValidationActionsTest extends IntegrationTestCase {
         $this->assertStringContainsString('name="password"', $html);
     }
 
+    /**
+     * @return void
+     */
     public function testPluginSettingsViewRenders(): void {
         $plugin = elgg_get_plugin_from_id('forms_register');
         if (!$plugin) {
@@ -69,10 +83,12 @@ class ValidationActionsTest extends IntegrationTestCase {
         $this->assertStringContainsString('autogen_username', $html);
     }
 
-    public function testBootstrapHookRegistrationsArePresent(): void {
-        $hooks = _elgg_services()->hooks;
-        $handlers = $hooks->getAllHandlers();
-        // action,register is registered by elgg-plugin.php
+    /**
+     * @return void
+     */
+    public function testBootstrapEventRegistrationsArePresent(): void {
+        $events = _elgg_services()->events;
+        $handlers = $events->getAllHandlers();
         $this->assertArrayHasKey('action', $handlers);
         $this->assertArrayHasKey('register', $handlers['action']);
     }

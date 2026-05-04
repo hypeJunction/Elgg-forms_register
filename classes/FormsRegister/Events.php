@@ -2,17 +2,15 @@
 
 namespace FormsRegister;
 
-use Elgg\Hook;
+use Elgg\Event;
 
-class Hooks
+class Events
 {
     /**
-     * Validates and prepares values for 'register' action
-     *
-     * @param \Elgg\Hook $hook 'action', 'register'
+     * @param \Elgg\Event $event 'action', 'register'
      * @return bool|null
      */
-    public static function prepareActionValues(Hook $hook)
+    public static function prepareActionValues(Event $event)
     {
 
         \elgg_make_sticky_form('register');
@@ -77,15 +75,13 @@ class Hooks
     }
 
     /**
-     * Saves additional input values on user registration
-     *
-     * @param \Elgg\Hook $hook 'register', 'user'
+     * @param \Elgg\Event $event 'register', 'user'
      * @return void
      */
-    public static function registerUser(Hook $hook)
+    public static function registerUser(Event $event)
     {
 
-        $user = $hook->getParam('user');
+        $user = $event->getParam('user');
 
         if (\elgg_get_plugin_setting('first_last_name', 'forms_register')) {
             $user->first_name = \get_input('first_name');
@@ -94,8 +90,6 @@ class Hooks
     }
 
     /**
-     * Generates a unique available and valid username
-     *
      * @param string $username Username prefix
      * @return string
      */
@@ -135,7 +129,7 @@ class Hooks
             if ($iterator > 0) {
                 $username = "$username$separator$iterator";
             }
-            $user = \get_user_by_username($username);
+            $user = \elgg_get_user_by_username($username);
             $available = !$user;
             try {
                 if ($available) {
@@ -144,7 +138,6 @@ class Hooks
             } catch (\Elgg\Exceptions\Configuration\RegistrationException $e) {
                 $available = false;
                 if ($iterator >= 100) {
-                    // too many failed attempts
                     $username = _elgg_services()->crypto->getRandomString(8);
                 }
             }

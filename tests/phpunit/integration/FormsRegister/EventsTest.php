@@ -3,17 +3,15 @@
 namespace FormsRegister;
 
 use Elgg\IntegrationTestCase;
-use Elgg\HooksRegistrationService\Hook;
-use FormsRegister\Hooks;
+use Elgg\EventsService\Event;
+use FormsRegister\Events;
 
-/**
- * Integration tests for FormsRegister\Hooks.
- */
-class HooksTest extends IntegrationTestCase {
+class EventsTest extends IntegrationTestCase {
 
     /** @var array<string,mixed> */
     private $origSettings = [];
 
+    /** @var mixed */
     private $settingKeys = [
         'first_last_name',
         'autogen_name',
@@ -25,11 +23,9 @@ class HooksTest extends IntegrationTestCase {
     ];
 
     public function up() {
-        // Snapshot plugin settings so tests don't pollute config
         foreach ($this->settingKeys as $k) {
             $this->origSettings[$k] = elgg_get_plugin_setting($k, 'forms_register');
         }
-        // Default: clear every setting
         foreach ($this->settingKeys as $k) {
             elgg_get_plugin_from_id('forms_register')->setSetting($k, '');
         }
@@ -39,50 +35,68 @@ class HooksTest extends IntegrationTestCase {
         foreach ($this->origSettings as $k => $v) {
             elgg_get_plugin_from_id('forms_register')->setSetting($k, (string) $v);
         }
-        // Clean inputs
         foreach (['first_name', 'last_name', 'email', 'name', 'username', 'password', 'password2'] as $k) {
             set_input($k, null);
         }
     }
 
+    /**
+     * @return string
+     */
     public function getPluginID(): string {
         return 'forms_register';
     }
 
-    private function buildActionHook(): Hook {
-        return new Hook(elgg(), 'action', 'register', null, []);
+    /**
+     * @return Event
+     */
+    private function buildActionEvent(): Event {
+        return new Event(elgg(), 'action', 'register', null, []);
     }
 
+    /**
+     * @return void
+     */
     public function testGenerateUsernameReturnsLowercaseNonEmpty(): void {
-        $username = Hooks::generateUsername('TestUser');
+        $username = Events::generateUsername('TestUser');
         $this->assertIsString($username);
         $this->assertNotEmpty($username);
         $this->assertEquals(strtolower($username), $username);
     }
 
+    /**
+     * @return void
+     */
     public function testGenerateUsernameWithEmptyInputStillReturnsValidUsername(): void {
-        $username = Hooks::generateUsername('');
+        $username = Events::generateUsername('');
         $this->assertIsString($username);
         $this->assertNotEmpty($username);
-        // Should satisfy minusername length
         $minlength = (int) (elgg_get_config('minusername') ?: 4);
         $this->assertGreaterThanOrEqual($minlength, strlen($username));
     }
 
+    /**
+     * @return void
+     */
     public function testGenerateUsernameStripsInvalidCharacters(): void {
-        $username = Hooks::generateUsername('foo bar#baz');
-        // invalid chars replaced by '.'; lowercased
+        $username = Events::generateUsername('foo bar#baz');
         $this->assertStringNotContainsString(' ', $username);
         $this->assertStringNotContainsString('#', $username);
     }
 
+    /**
+     * @return void
+     */
     public function testGenerateUsernameUniquenessAgainstExistingUser(): void {
         $existing = $this->createUser();
         $taken = $existing->username;
-        $generated = Hooks::generateUsername($taken);
+        $generated = Events::generateUsername($taken);
         $this->assertNotSame($taken, $generated);
     }
 
+    /**
+     * @return void
+     */
     public function testPrepareActionValuesAutoGeneratesNameFromEmail(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('autogen_name', '1');
 
@@ -91,13 +105,16 @@ class HooksTest extends IntegrationTestCase {
         set_input('username', 'jdoe' . substr(md5((string) mt_rand()), 0, 6));
         set_input('password', 'somePasswordXYZ!');
 
-        $hook = $this->buildActionHook();
-        $result = Hooks::prepareActionValues($hook);
+        $event = $this->buildActionEvent();
+        $result = Events::prepareActionValues($event);
 
         $this->assertNotFalse($result);
         $this->assertSame('jdoe', get_input('name'));
     }
 
+    /**
+     * @return void
+     */
     public function testPrepareActionValuesBuildsNameFromFirstLast(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
@@ -108,13 +125,16 @@ class HooksTest extends IntegrationTestCase {
         set_input('username', 'jane' . substr(md5((string) mt_rand()), 0, 6));
         set_input('password', 'somePasswordXYZ!');
 
-        $hook = $this->buildActionHook();
-        $result = Hooks::prepareActionValues($hook);
+        $event = $this->buildActionEvent();
+        $result = Events::prepareActionValues($event);
 
         $this->assertNotFalse($result);
         $this->assertSame('Jane Doe', get_input('name'));
     }
 
+    /**
+     * @return void
+     */
     public function testPrepareActionValuesRejectsMissingFirstLast(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
@@ -123,12 +143,15 @@ class HooksTest extends IntegrationTestCase {
         set_input('email', 'nobody@example.com');
         set_input('name', '');
 
-        $hook = $this->buildActionHook();
-        $result = Hooks::prepareActionValues($hook);
+        $event = $this->buildActionEvent();
+        $result = Events::prepareActionValues($event);
 
         $this->assertFalse($result);
     }
 
+    /**
+     * @return void
+     */
     public function testPrepareActionValuesAutogensUsernameFirstNameOnly(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username', '1');
         elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username_algo', 'first_name_only');
@@ -139,14 +162,17 @@ class HooksTest extends IntegrationTestCase {
         set_input('password', 'somePasswordXYZ!');
         set_input('name', 'Alice');
 
-        $hook = $this->buildActionHook();
-        Hooks::prepareActionValues($hook);
+        $event = $this->buildActionEvent();
+        Events::prepareActionValues($event);
 
         $u = (string) get_input('username');
         $this->assertNotEmpty($u);
         $this->assertStringStartsWith('alice', $u);
     }
 
+    /**
+     * @return void
+     */
     public function testPrepareActionValuesAutogensPassword(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('autogen_password', '1');
 
@@ -155,8 +181,8 @@ class HooksTest extends IntegrationTestCase {
         set_input('username', 'bob' . substr(md5((string) mt_rand()), 0, 6));
         set_input('password', '');
 
-        $hook = $this->buildActionHook();
-        Hooks::prepareActionValues($hook);
+        $event = $this->buildActionEvent();
+        Events::prepareActionValues($event);
 
         $pw = (string) get_input('password');
         $pw2 = (string) get_input('password2');
@@ -164,6 +190,9 @@ class HooksTest extends IntegrationTestCase {
         $this->assertSame($pw, $pw2);
     }
 
+    /**
+     * @return void
+     */
     public function testPrepareActionValuesHidePasswordRepeatCopiesPassword(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('hide_password_repeat', '1');
 
@@ -173,12 +202,15 @@ class HooksTest extends IntegrationTestCase {
         set_input('password', 'topSecretZZZ!1');
         set_input('password2', '');
 
-        $hook = $this->buildActionHook();
-        Hooks::prepareActionValues($hook);
+        $event = $this->buildActionEvent();
+        Events::prepareActionValues($event);
 
         $this->assertSame('topSecretZZZ!1', (string) get_input('password2'));
     }
 
+    /**
+     * @return void
+     */
     public function testRegisterUserWritesFirstLastName(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
@@ -186,19 +218,22 @@ class HooksTest extends IntegrationTestCase {
         set_input('first_name', 'Dan');
         set_input('last_name', 'Smith');
 
-        $hook = new Hook(
+        $event = new Event(
             elgg(),
             'register',
             'user',
             true,
             ['user' => $user]
         );
-        Hooks::registerUser($hook);
+        Events::registerUser($event);
 
         $this->assertSame('Dan', $user->first_name);
         $this->assertSame('Smith', $user->last_name);
     }
 
+    /**
+     * @return void
+     */
     public function testRegisterUserSkipsWhenSettingOff(): void {
         elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '');
 
@@ -206,14 +241,14 @@ class HooksTest extends IntegrationTestCase {
         set_input('first_name', 'Eve');
         set_input('last_name', 'Nobody');
 
-        $hook = new Hook(
+        $event = new Event(
             elgg(),
             'register',
             'user',
             true,
             ['user' => $user]
         );
-        Hooks::registerUser($hook);
+        Events::registerUser($event);
 
         $this->assertEmpty($user->first_name);
     }

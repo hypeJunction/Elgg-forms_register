@@ -5,7 +5,7 @@ $username = trim(get_input('username', ''));
 $available = true;
 
 elgg_call(ELGG_SHOW_DISABLED_ENTITIES, function () use ($username, &$available) {
-    if (get_user_by_username($username)) {
+    if (elgg_get_user_by_username($username)) {
         $available = false;
     }
 });
