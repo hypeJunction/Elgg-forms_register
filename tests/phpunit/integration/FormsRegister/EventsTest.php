@@ -3,7 +3,7 @@
 namespace FormsRegister;
 
 use Elgg\IntegrationTestCase;
-use Elgg\EventsService\Event;
+use Elgg\Event;
 use FormsRegister\Events;
 
 class EventsTest extends IntegrationTestCase {
