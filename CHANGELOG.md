@@ -1,3 +1,21 @@
+<a name="5.0.0"></a>
+# 5.0.0 (2026-05-04)
+
+### Migration to Elgg 5.x
+
+* Update `composer.json`: php >=8.2, elgg/elgg ^5.0; Docker image php:8.2-apache
+* Rename `'hooks'` key to `'events'` in `elgg-plugin.php` (unified events system)
+* Rename `Hooks.php` → `Events.php`; class `Hooks` → `Events`; `\Elgg\Hook` → `\Elgg\Event`
+* Replace `get_user_by_username()` with `elgg_get_user_by_username()` (function removed in 5.x)
+* Adapt test suite: `HooksTest` → `EventsTest`; update `Hook` object usage to `\Elgg\Event`
+* Add `docker/elgg5/` stack (PHP 8.2, MySQL 8.0) for Elgg 5.x local verification
+* Fix: invert empty IF guards in `register.php` view for PHPCS compliance
+* No data migration needed (plugin settings are unchanged)
+
+### BREAKING CHANGES
+
+* Requires Elgg 5.0 or later and PHP 8.2+
+
 <a name="4.0.0"></a>
 # 4.0.0 (2026-04-17)
 

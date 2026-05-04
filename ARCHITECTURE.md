@@ -1,4 +1,4 @@
-# forms_register — Architecture (Elgg 4.x)
+# forms_register — Architecture (Elgg 5.x)
 
 ## Plugin summary
 
@@ -10,7 +10,7 @@
 - AJAX validation endpoints for username availability and validity
 
 No custom entity types. No custom database tables. Plugin modifies the
-standard `register` action flow via Elgg's hook/event system.
+standard `register` action flow via Elgg's unified event system (5.x).
 
 ## Directory structure
 
@@ -23,7 +23,7 @@ forms_register/
 ├── classes/
 │   └── FormsRegister/
 │       ├── Bootstrap.php          — DefaultPluginBootstrap: extends views when forms_validation is active
-│       └── Hooks.php              — prepareActionValues, registerUser, generateUsername
+│       └── Events.php             — prepareActionValues, registerUser, generateUsername
 ├── views/default/
 │   ├── elements/forms/validation/
 │   │   ├── password.php           — injects Parsley minstrength validator (AMD require)
@@ -33,10 +33,12 @@ forms_register/
 │   │   └── register.php           — overrides Elgg's core register form
 │   └── plugins/forms_register/
 │       └── settings.php           — admin settings page
-├── docker/                        — per-plugin Elgg 4.x test stack
+├── docker/
+│   ├── docker-compose.yml         — per-plugin Elgg 4.x test stack
+│   └── elgg5/                     — per-plugin Elgg 5.x test stack (PHP 8.2, MySQL 8.0)
 ├── tests/
 │   ├── phpunit/integration/FormsRegister/
-│   │   ├── HooksTest.php
+│   │   ├── EventsTest.php
 │   │   └── ValidationActionsTest.php
 │   └── playwright/
 │       └── tests/register-form.spec.ts
@@ -44,12 +46,12 @@ forms_register/
 └── elgg-plugin.php
 ```
 
-## Registered hooks/events (elgg-plugin.php)
+## Registered events (elgg-plugin.php)
 
-| Hook | Type | Handler | Priority |
-|------|------|---------|----------|
-| `action` | `register` | `Hooks::prepareActionValues` | 1 |
-| `register` | `user` | `Hooks::registerUser` | 1 |
+| Event | Type | Handler | Priority |
+|-------|------|---------|----------|
+| `action` | `register` | `Events::prepareActionValues` | 1 |
+| `register` | `user` | `Events::registerUser` | 1 |
 
 ## Actions
 
@@ -99,3 +101,13 @@ forms_register/
   Playwright redirect failures; registration enabled via `elgg-install.sh`
 - Test suite: `elgg_users_entity` table no longer exists in Elgg 4.x — DB helpers updated to
   query `elgg_entities` + `elgg_metadata`
+
+## Migration notes (4.x → 5.x)
+
+- `composer.json`: `php >=8.2`, `elgg/elgg ^5.0`; Docker image switched to `php:8.2-apache`
+- `elgg-plugin.php`: `'hooks'` key renamed to `'events'`; handler references updated to `Events::class`
+- `Hooks.php` renamed to `Events.php`; class renamed `Hooks` → `Events`; `\Elgg\Hook` → `\Elgg\Event`
+- `get_user_by_username()` → `elgg_get_user_by_username()` (removed in 5.x)
+- Tests adapted: `HooksTest.php` → `EventsTest.php`; `Elgg\HooksRegistrationService\Hook` → `Elgg\Event`
+- PHPCS: empty IF guards in register.php view inverted to positive conditions; class docblocks added
+- Added `docker/elgg5/` stack (PHP 8.2, MySQL 8.0) for 5.x verification
