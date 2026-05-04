@@ -150,6 +150,13 @@ SETTINGS_VALUES
         echo 'Registration enabled.' . PHP_EOL;
     " 2>&1
 
+    # Hand the data root over to the Apache user. The installer ran as
+    # root (entrypoint context) and left every cache subdirectory
+    # root-owned, which makes Phpfastcache throw IOException on the
+    # first request and the site renders Elgg's "fatal error" stub.
+    chown -R www-data:www-data "${ELGG_DATA_ROOT:-/var/www/data/}"
+    chmod -R u+rwX,g+rX,o+rX "${ELGG_DATA_ROOT:-/var/www/data/}"
+
     touch /var/www/html/.elgg-installed
     echo "Elgg 4.x setup complete."
 fi
