@@ -3,7 +3,7 @@
 return [
 	'plugin' => [
 		'name' => 'Registration Form',
-		'version' => '6.0.0',
+		'version' => '7.0.0',
 	],
 
 	'bootstrap' => \FormsRegister\Bootstrap::class,
