@@ -1,8 +1,8 @@
 Enhanced registration form for Elgg
 ===================================
-![Elgg 2.3](https://img.shields.io/badge/Elgg-2.3.x-orange.svg?style=flat-square)
+![Elgg 5.x](https://img.shields.io/badge/Elgg-5.x-orange.svg?style=flat-square)
 
-This plugin is a wrap-up of most common registration form modifications that I have performed in the last 5 years.
+Enhanced registration form with client-side validation and configurable field options.
 
 ## Features
 

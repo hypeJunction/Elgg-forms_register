@@ -2,7 +2,7 @@
 	"name": "hypejunction/forms_register",
 	"type": "elgg-plugin",
 	"description": "Enhanced registration form for Elgg",
-	"homepage": "http://hypejunction.com",
+	"homepage": "https://github.com/hypeJunction/Elgg-forms_register",
 	"keywords": [
 		"elgg",
 		"plugin",
@@ -11,12 +11,6 @@
 		"registration"
 	],
 	"license": "GPL-2.0-or-later",
-	"authors": [
-		{
-			"name": "Ismayil Khayredinov",
-			"email": "info@hypejunction.com"
-		}
-	],
 	"require": {
 		"php": ">=8.2",
 		"elgg/elgg": "^5.0",
