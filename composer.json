@@ -4,7 +4,11 @@
 	"description": "Enhanced registration form for Elgg",
 	"homepage": "http://hypejunction.com",
 	"keywords": [
-		"elgg", "plugin", "forms", "validation", "registration"
+		"elgg",
+		"plugin",
+		"forms",
+		"validation",
+		"registration"
 	],
 	"license": "GPL-2.0",
 	"authors": [
@@ -15,7 +19,7 @@
 	],
 	"require": {
 		"php": ">=7.1",
-		"composer/installers": "~1.0",
+		"composer/installers": "^1.0 || ^2.0",
 		"bower-asset/zxcvbn": "~4.1",
 		"bjeavons/zxcvbn-php": "*"
 	},
