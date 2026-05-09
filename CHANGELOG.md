@@ -1,3 +1,19 @@
+<a name="6.0.0"></a>
+# 6.0.0 (2026-05-09)
+
+### Migration to Elgg 6.x
+
+* Update `composer.json`: `php >=8.1`, `elgg/elgg ~6.1.0`, added `ext-intl`
+* Convert `password.js` and `username.js` from AMD (`define(function(require){...})`) to ES modules (`import`)
+* Update Docker stack to Elgg 6.x (PHPUnit ^10.5)
+* Version bumped to 6.0.0
+
+### BREAKING CHANGES
+
+* Requires Elgg 6.x
+
+---
+
 <a name="5.0.0"></a>
 # 5.0.0 (2026-05-04)
 

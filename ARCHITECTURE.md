@@ -1,4 +1,4 @@
-# forms_register — Architecture (Elgg 5.x)
+# forms_register — Architecture (Elgg 6.x)
 
 ## Plugin summary
 
@@ -10,7 +10,7 @@
 - AJAX validation endpoints for username availability and validity
 
 No custom entity types. No custom database tables. Plugin modifies the
-standard `register` action flow via Elgg's unified event system (5.x).
+standard `register` action flow via Elgg's unified event system (6.x).
 
 ## Directory structure
 
@@ -111,3 +111,10 @@ forms_register/
 - Tests adapted: `HooksTest.php` → `EventsTest.php`; `Elgg\HooksRegistrationService\Hook` → `Elgg\Event`
 - PHPCS: empty IF guards in register.php view inverted to positive conditions; class docblocks added
 - Added `docker/elgg5/` stack (PHP 8.2, MySQL 8.0) for 5.x verification
+
+## Migration notes (5.x → 6.x)
+
+- `composer.json`: `php >=8.1`, `elgg/elgg ~6.1.0`, added `ext-intl`
+- `elgg-plugin.php`: version bumped `5.0.0 → 6.0.0`
+- `password.js` and `username.js`: converted AMD `define(function(require){...})` wrappers to ES module `import` statements; `require('elgg')` → `import elgg from 'elgg'`; `require('jquery')` → `import $ from 'jquery'`
+- Docker stack updated to Elgg 6.x (PHPUnit ^10.5, MySQL 8.0)
