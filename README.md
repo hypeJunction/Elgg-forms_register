@@ -1,6 +1,6 @@
 Enhanced registration form for Elgg
 ===================================
-![Elgg 5.x](https://img.shields.io/badge/Elgg-5.x-orange.svg?style=flat-square)
+![Elgg 7.x](https://img.shields.io/badge/Elgg-7.x-orange.svg?style=flat-square)
 
 Enhanced registration form with client-side validation and configurable field options.
 
@@ -31,3 +31,9 @@ Enhanced registration form with client-side validation and configurable field op
 ### Plugins Settings
 
 ![Plugin settings](https://raw.github.com/hypeJunction/Elgg-forms_register/master/screenshots/settings.png "Plugin settings")
+
+## Compatibility
+
+| Plugin version | Elgg version |
+|---|---|
+| current | 7.x |
