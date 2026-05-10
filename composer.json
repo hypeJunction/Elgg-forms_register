@@ -1,42 +1,49 @@
 {
-	"name": "hypejunction/forms_register",
-	"type": "elgg-plugin",
-	"description": "Enhanced registration form for Elgg",
-	"homepage": "https://github.com/hypeJunction/Elgg-forms_register",
-	"keywords": [
-		"elgg",
-		"plugin",
-		"forms",
-		"validation",
-		"registration"
-	],
-	"license": "GPL-2.0-or-later",
-	"require": {
-		"php": ">=8.3",
-		"elgg/elgg": "~7.0.0",
-		"ext-intl": "*",
-		"composer/installers": "^2.0",
-		"bower-asset/zxcvbn": "~4.1",
-		"bjeavons/zxcvbn-php": "*"
-	},
-	"suggest": {
-		"hypejunction/forms_validation": "*"
-	},
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "https://asset-packagist.org"
-		}
-	],
-	"extra": {
-		"installer-name": "forms_register",
-		"elgg-plugin": {
-			"id": "forms_register"
-		}
-	},
-	"config": {
-		"allow-plugins": {
-			"composer/installers": true
-		}
-	}
+    "name": "hypejunction/forms_register",
+    "type": "elgg-plugin",
+    "description": "Enhanced registration form for Elgg",
+    "homepage": "https://github.com/hypeJunction/Elgg-forms_register",
+    "keywords": [
+        "elgg",
+        "plugin",
+        "forms",
+        "validation",
+        "registration"
+    ],
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.3",
+        "elgg/elgg": "~7.0.0",
+        "ext-intl": "*",
+        "composer/installers": "^2.0",
+        "bower-asset/zxcvbn": "~4.1",
+        "bjeavons/zxcvbn-php": "*"
+    },
+    "suggest": {
+        "hypejunction/forms_validation": "*"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "extra": {
+        "installer-name": "forms_register",
+        "elgg-plugin": {
+            "id": "forms_register"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
+    "authors": [
+        {
+            "name": "Ismayil Khayredinov",
+            "email": "ismayil.khayredinov@gmail.com"
+        }
+    ],
+    "version": "4.0.0"
 }
