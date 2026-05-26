@@ -42,7 +42,7 @@ class ValidationActionsTest extends IntegrationTestCase {
      */
     public function testGetUserByUsernameReturnsNullForAvailable(): void {
         $random = 'nonexistent_' . substr(md5((string) mt_rand()), 0, 10);
-        $this->assertNull(elgg_get_user_by_username($random));
+        $this->assertNull(\elgg_get_user_by_username($random));
     }
 
     /**
@@ -50,7 +50,7 @@ class ValidationActionsTest extends IntegrationTestCase {
      */
     public function testGetUserByUsernameFindsExisting(): void {
         $user = $this->createUser();
-        $found = elgg_get_user_by_username($user->username);
+        $found = \elgg_get_user_by_username($user->username);
         $this->assertNotNull($found);
         $this->assertSame($user->guid, $found->guid);
     }
@@ -59,7 +59,7 @@ class ValidationActionsTest extends IntegrationTestCase {
      * @return void
      */
     public function testRegisterFormViewRenders(): void {
-        $html = elgg_view_form('register', [], [
+        $html = \elgg_view_form('register', [], [
             'friend_guid' => 0,
             'invitecode' => '',
         ]);
@@ -73,11 +73,11 @@ class ValidationActionsTest extends IntegrationTestCase {
      * @return void
      */
     public function testPluginSettingsViewRenders(): void {
-        $plugin = elgg_get_plugin_from_id('forms_register');
+        $plugin = \elgg_get_plugin_from_id('forms_register');
         if (!$plugin) {
             $this->markTestSkipped('forms_register plugin entity not present');
         }
-        $html = elgg_view('plugins/forms_register/settings', ['entity' => $plugin]);
+        $html = \elgg_view('plugins/forms_register/settings', ['entity' => $plugin]);
         $this->assertIsString($html);
         $this->assertStringContainsString('min_password_strength', $html);
         $this->assertStringContainsString('autogen_username', $html);
@@ -87,7 +87,7 @@ class ValidationActionsTest extends IntegrationTestCase {
      * @return void
      */
     public function testBootstrapEventRegistrationsArePresent(): void {
-        $events = _elgg_services()->events;
+        $events = \_elgg_services()->events;
         $handlers = $events->getAllHandlers();
         $this->assertArrayHasKey('action', $handlers);
         $this->assertArrayHasKey('register', $handlers['action']);
