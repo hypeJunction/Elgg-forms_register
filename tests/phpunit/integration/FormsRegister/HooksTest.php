@@ -27,17 +27,17 @@ class HooksTest extends IntegrationTestCase {
     public function up() {
         // Snapshot plugin settings so tests don't pollute config
         foreach ($this->settingKeys as $k) {
-            $this->origSettings[$k] = elgg_get_plugin_setting($k, 'forms_register');
+            $this->origSettings[$k] = \elgg_get_plugin_setting($k, 'forms_register');
         }
         // Default: clear every setting
         foreach ($this->settingKeys as $k) {
-            elgg_get_plugin_from_id('forms_register')->setSetting($k, '');
+            \elgg_get_plugin_from_id('forms_register')->setSetting($k, '');
         }
     }
 
     public function down() {
         foreach ($this->origSettings as $k => $v) {
-            elgg_get_plugin_from_id('forms_register')->setSetting($k, (string) $v);
+            \elgg_get_plugin_from_id('forms_register')->setSetting($k, (string) $v);
         }
         // Clean inputs
         foreach (['first_name', 'last_name', 'email', 'name', 'username', 'password', 'password2'] as $k) {
@@ -65,7 +65,7 @@ class HooksTest extends IntegrationTestCase {
         $this->assertIsString($username);
         $this->assertNotEmpty($username);
         // Should satisfy minusername length
-        $minlength = (int) (elgg_get_config('minusername') ?: 4);
+        $minlength = (int) (\elgg_get_config('minusername') ?: 4);
         $this->assertGreaterThanOrEqual($minlength, strlen($username));
     }
 
@@ -84,7 +84,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesAutoGeneratesNameFromEmail(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_name', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('autogen_name', '1');
 
         set_input('email', 'jdoe@example.com');
         set_input('name', '');
@@ -99,7 +99,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesBuildsNameFromFirstLast(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
         set_input('first_name', 'Jane');
         set_input('last_name', 'Doe');
@@ -116,7 +116,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesRejectsMissingFirstLast(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
         set_input('first_name', '');
         set_input('last_name', '');
@@ -130,8 +130,8 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesAutogensUsernameFirstNameOnly(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username', '1');
-        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username_algo', 'first_name_only');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('autogen_username_algo', 'first_name_only');
 
         set_input('first_name', 'Alice');
         set_input('email', 'alice@example.com');
@@ -148,7 +148,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesAutogensPassword(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('autogen_password', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('autogen_password', '1');
 
         set_input('email', 'bob@example.com');
         set_input('name', 'Bob');
@@ -165,7 +165,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testPrepareActionValuesHidePasswordRepeatCopiesPassword(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('hide_password_repeat', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('hide_password_repeat', '1');
 
         set_input('email', 'c@example.com');
         set_input('name', 'Carol');
@@ -180,7 +180,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testRegisterUserWritesFirstLastName(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '1');
 
         $user = $this->createUser();
         set_input('first_name', 'Dan');
@@ -200,7 +200,7 @@ class HooksTest extends IntegrationTestCase {
     }
 
     public function testRegisterUserSkipsWhenSettingOff(): void {
-        elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '');
+        \elgg_get_plugin_from_id('forms_register')->setSetting('first_last_name', '');
 
         $user = $this->createUser();
         set_input('first_name', 'Eve');

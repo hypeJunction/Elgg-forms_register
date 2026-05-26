@@ -126,7 +126,7 @@ class Hooks
         }
 
         if ($fill > 0) {
-            $suffix = _elgg_services()->crypto->getRandomString($fill);
+            $suffix = \_elgg_services()->crypto->getRandomString($fill);
             $username = "$username$separator$suffix";
         }
 
@@ -145,7 +145,7 @@ class Hooks
                 $available = false;
                 if ($iterator >= 100) {
                     // too many failed attempts
-                    $username = _elgg_services()->crypto->getRandomString(8);
+                    $username = \_elgg_services()->crypto->getRandomString(8);
                 }
             }
             $iterator++;

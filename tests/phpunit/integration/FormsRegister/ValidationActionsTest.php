@@ -48,7 +48,7 @@ class ValidationActionsTest extends IntegrationTestCase {
     }
 
     public function testRegisterFormViewRenders(): void {
-        $html = elgg_view_form('register', [], [
+        $html = \elgg_view_form('register', [], [
             'friend_guid' => 0,
             'invitecode' => '',
         ]);
@@ -59,18 +59,18 @@ class ValidationActionsTest extends IntegrationTestCase {
     }
 
     public function testPluginSettingsViewRenders(): void {
-        $plugin = elgg_get_plugin_from_id('forms_register');
+        $plugin = \elgg_get_plugin_from_id('forms_register');
         if (!$plugin) {
             $this->markTestSkipped('forms_register plugin entity not present');
         }
-        $html = elgg_view('plugins/forms_register/settings', ['entity' => $plugin]);
+        $html = \elgg_view('plugins/forms_register/settings', ['entity' => $plugin]);
         $this->assertIsString($html);
         $this->assertStringContainsString('min_password_strength', $html);
         $this->assertStringContainsString('autogen_username', $html);
     }
 
     public function testBootstrapHookRegistrationsArePresent(): void {
-        $hooks = _elgg_services()->hooks;
+        $hooks = \_elgg_services()->hooks;
         $handlers = $hooks->getAllHandlers();
         // action,register is registered by elgg-plugin.php
         $this->assertArrayHasKey('action', $handlers);
