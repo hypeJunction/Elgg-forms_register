@@ -16,18 +16,11 @@
         "elgg/elgg": "~7.0.0",
         "ext-intl": "*",
         "composer/installers": "^2.0",
-        "bower-asset/zxcvbn": "~4.1",
         "bjeavons/zxcvbn-php": "*"
     },
     "suggest": {
         "hypejunction/forms_validation": "*"
     },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ],
     "extra": {
         "installer-name": "forms_register",
         "elgg-plugin": {
