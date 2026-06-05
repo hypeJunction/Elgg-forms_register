@@ -38,7 +38,7 @@ return [
 
 	'views' => [
 		'default' => [
-			'zxcvbn/' => __DIR__ . '/vendor/bower-asset/zxcvbn/dist/',
+			'zxcvbn/' => __DIR__ . '/vendors/zxcvbn/',
 		],
 	],
 ];
