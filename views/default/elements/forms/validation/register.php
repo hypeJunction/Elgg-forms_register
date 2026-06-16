@@ -1,6 +1,3 @@
-<?php ?>
-<script>
-	require(['elements/forms/validation'], function () {
-		$('.elgg-form-register').parsley();
-	});
-</script>
+<?php
+
+elgg_import_esm('elements/forms/validation/register');
