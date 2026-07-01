@@ -6,8 +6,5 @@
 if (empty($vars['data-parsley-minstrength'])) {
 	return;
 }
-?>
-<script>
-	require(['elements/forms/validation/password']);
-</script>
 
+elgg_import_esm('elements/forms/validation/password');

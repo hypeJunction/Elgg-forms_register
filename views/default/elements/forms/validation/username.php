@@ -8,7 +8,5 @@
 if (empty($vars['data-parsley-validusername']) && empty($vars['data-parsley-availableusername'])) {
 	return;
 }
-?>
-<script>
-	require(['elements/forms/validation/username']);
-</script>
+
+elgg_import_esm('elements/forms/validation/username');
